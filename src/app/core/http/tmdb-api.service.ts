@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { TMDB_CONFIG, TmdbConfig } from '../config/tmdb.config';
@@ -23,10 +23,8 @@ export interface TmdbAccessTokenResponse {
 
 @Injectable({ providedIn: 'root' })
 export class TmdbApiService {
-  constructor(
-    private readonly http: HttpClient,
-    @Inject(TMDB_CONFIG) private readonly config: TmdbConfig
-  ) {}
+  private readonly http = inject(HttpClient);
+  private readonly config = inject<TmdbConfig>(TMDB_CONFIG);
 
   createRequestToken(redirectTo: string): Observable<TmdbRequestTokenResponse> {
     return this.http.post<TmdbRequestTokenResponse>(

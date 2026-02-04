@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../core/auth/auth.service';
@@ -7,9 +7,9 @@ import { HomeStore } from '../data-access/home.store';
 
 @Component({
   selector: 'app-home-page',
-  standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './home.page.html'
+  templateUrl: './home.page.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePageComponent implements OnInit {
   private readonly store = inject(HomeStore);

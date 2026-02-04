@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { catchError, finalize, map, of, tap } from 'rxjs';
 
 import { TmdbApiService } from '../../../core/http/tmdb-api.service';
@@ -6,11 +6,11 @@ import { mapMovieListResponseDtoToPaginatedResult } from '../../../domain/movies
 
 @Injectable({ providedIn: 'root' })
 export class HomeStore {
+  private readonly api = inject(TmdbApiService);
+
   readonly titles = signal<string[]>([]);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
-
-  constructor(private readonly api: TmdbApiService) {}
 
   loadNowPlayingTitles(limit = 10): void {
     if (this.loading()) {

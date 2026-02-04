@@ -1,26 +1,22 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 
-import { Inject } from '@angular/core';
-
-import { TmdbApiService } from '../http/tmdb-api.service';
 import { TMDB_CONFIG, TmdbConfig } from '../config/tmdb.config';
+import { TmdbApiService } from '../http/tmdb-api.service';
 
 const ACCESS_TOKEN_KEY = 'tmdb.access_token';
 const REQUEST_TOKEN_KEY = 'tmdb.request_token';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private readonly api = inject(TmdbApiService);
+  private readonly router = inject(Router);
+  private readonly config = inject<TmdbConfig>(TMDB_CONFIG);
+
   private readonly accessTokenSignal = signal<string | null>(this.readAccessToken());
   readonly accessToken = this.accessTokenSignal.asReadonly();
   readonly isAuthenticated = computed(() => !!this.accessTokenSignal());
-
-  constructor(
-    private readonly api: TmdbApiService,
-    private readonly router: Router,
-    @Inject(TMDB_CONFIG) private readonly config: TmdbConfig
-  ) {}
 
   startLogin(redirectTo = this.config.redirectUri): void {
     this.api
