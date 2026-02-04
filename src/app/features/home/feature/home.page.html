@@ -1,0 +1,25 @@
+<section class="home-page">
+  <header>
+    <h1>Peliculas recientes</h1>
+    <p>Demo: primeros 10 titulos de Now Playing.</p>
+  </header>
+
+  @if (!isAuthenticated()) {
+    <p>Debes autenticarte para continuar.</p>
+    <button type="button" (click)="login()">Conectar con TMDB</button>
+  } @else {
+    @if (loading()) {
+      <p>Cargando...</p>
+    } @else if (error()) {
+      <p>{{ error() }}</p>
+      <button type="button" (click)="reload()">Reintentar</button>
+    } @else {
+      <ol>
+        @for (title of titles(); track title) {
+          <li>{{ title }}</li>
+        }
+      </ol>
+      <p><a routerLink="/auth">Configurar sesion</a></p>
+    }
+  }
+</section>

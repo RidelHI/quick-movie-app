@@ -1,0 +1,14 @@
+<section class="auth-page">
+  <h1>Autenticacion TMDB</h1>
+  <p>
+    Esta demo usa el flujo v4 de TMDB. Primero autorizas la app y luego vuelve aqui.
+  </p>
+
+  @if (isAuthenticated()) {
+    <p>Sesion activa.</p>
+    <button type="button" (click)="logout()">Cerrar sesion</button>
+    <p><a routerLink="/home">Ir a Home</a></p>
+  } @else {
+    <button type="button" (click)="startLogin()">Conectar con TMDB</button>
+  }
+</section>
