@@ -2,15 +2,15 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 
-import { TMDB_CONFIG, TmdbConfig } from '../config/tmdb.config';
-import { TmdbApiService } from '../http/tmdb-api.service';
+import { TMDB_CONFIG, TmdbConfig } from '../../shared/config/tmdb.config';
+import { TmdbAuthApiService } from './tmdb-auth-api.service';
 
 const ACCESS_TOKEN_KEY = 'tmdb.access_token';
 const REQUEST_TOKEN_KEY = 'tmdb.request_token';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly api = inject(TmdbApiService);
+  private readonly api = inject(TmdbAuthApiService);
   private readonly router = inject(Router);
   private readonly config = inject<TmdbConfig>(TMDB_CONFIG);
 
@@ -27,7 +27,7 @@ export class AuthService {
           const url = this.buildApprovalUrl(response.request_token);
           window.location.assign(url);
         }),
-        catchError(() => of(null))
+        catchError(() => of(null)),
       )
       .subscribe();
   }
@@ -51,7 +51,7 @@ export class AuthService {
         catchError(() => {
           sessionStorage.removeItem(REQUEST_TOKEN_KEY);
           return of(null);
-        })
+        }),
       )
       .subscribe();
   }
