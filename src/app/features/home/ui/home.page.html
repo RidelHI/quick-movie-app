@@ -14,11 +14,19 @@
       <p>{{ error() }}</p>
       <button type="button" (click)="reload()">Reintentar</button>
     } @else {
-      <ol>
-        @for (title of titles(); track title) {
-          <li>{{ title }}</li>
+      <div class="movie-grid">
+        @for (movie of nowPlaying(); track movie.id) {
+          <article class="movie-card">
+            @if (movie.posterPath) {
+              <img
+                [src]="'https://image.tmdb.org/t/p/w200' + movie.posterPath"
+                [alt]="movie.title"
+              />
+            }
+            <h3>{{ movie.title }}</h3>
+          </article>
         }
-      </ol>
+      </div>
       <p><a routerLink="/auth">Configurar sesion</a></p>
     }
   }

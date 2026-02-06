@@ -15,7 +15,7 @@ export class HomePageComponent implements OnInit {
   private readonly store = inject(HomeStore);
   private readonly auth = inject(AuthService);
 
-  readonly titles = this.store.titles;
+  readonly nowPlaying = this.store.nowPlaying;
   readonly loading = this.store.loading;
   readonly error = this.store.error;
   readonly isAuthenticated = this.auth.isAuthenticated;

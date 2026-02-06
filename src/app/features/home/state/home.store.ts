@@ -4,6 +4,7 @@ import { catchError, map, of, throwError } from 'rxjs';
 
 import { TmdbMoviesApiService } from '../data-access/tmdb-movies-api.service';
 import { mapMovieListResponseDtoToPaginatedResult } from '../domain/mappers/pagination.mapper';
+import { MovieSummary } from '../domain/models/movie-summary.model';
 
 @Injectable({ providedIn: 'root' })
 export class HomeStore {
@@ -11,20 +12,20 @@ export class HomeStore {
 
   private readonly request = signal<
     | {
-        page: number;
-        limit: number;
-        language: string;
-      }
+      page: number;
+      limit: number;
+      language: string;
+    }
     | undefined
   >(undefined);
 
   private readonly nowPlayingResource = rxResource<
-    string[],
+    MovieSummary[],
     | {
-        page: number;
-        limit: number;
-        language: string;
-      }
+      page: number;
+      limit: number;
+      language: string;
+    }
     | undefined
   >({
     params: () => this.request(),
@@ -36,13 +37,13 @@ export class HomeStore {
 
       return this.api.getNowPlaying(params.page, { language: params.language }).pipe(
         map((dto) => mapMovieListResponseDtoToPaginatedResult(dto)),
-        map((result) => result.items.slice(0, params.limit).map((movie) => movie.title)),
+        map((result) => result.items.slice(0, params.limit)),
         catchError(() => throwError(() => new Error('No se pudieron cargar las peliculas.'))),
       );
     },
   });
 
-  readonly titles = computed(() => this.nowPlayingResource.value());
+  readonly nowPlaying = this.nowPlayingResource.value;
   readonly loading = this.nowPlayingResource.isLoading;
   readonly error = computed(() => this.nowPlayingResource.error()?.message ?? null);
 
