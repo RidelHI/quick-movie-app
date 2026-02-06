@@ -42,11 +42,14 @@
       </div>
     } @else {
       @if (loading()) {
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-          <p class="text-sm text-slate-300">Cargando...</p>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6" role="status">
+          <p class="text-sm text-slate-300" aria-live="polite">Cargando...</p>
         </div>
       } @else if (error()) {
-        <div class="rounded-2xl border border-red-500/40 bg-red-500/10 p-6 text-red-100">
+        <div
+          class="rounded-2xl border border-red-500/40 bg-red-500/10 p-6 text-red-100"
+          role="alert"
+        >
           <p class="text-sm">{{ error() }}</p>
           <button
             type="button"
@@ -57,60 +60,51 @@
           </button>
         </div>
       } @else {
-        <div
-          ngGrid
-          [rowWrap]="'continuous'"
-          [colWrap]="'continuous'"
-          aria-label="Peliculas recientes"
-          class="space-y-6"
-        >
-          @for (row of movieRows(); track $index) {
-            <div ngGridRow class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              @for (movie of row; track movie.id) {
-                <article
-                  ngGridCell
-                  class="group rounded-3xl border border-slate-800 bg-slate-900/50 p-4 shadow-[0_30px_60px_-50px_rgba(15,23,42,0.9)] transition hover:-translate-y-1 hover:border-slate-600 hover:bg-slate-900/80 data-[active=true]:border-sky-400 data-[active=true]:shadow-[0_0_0_2px_rgba(56,189,248,0.35)]"
+        <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-label="Peliculas recientes">
+          @for (movie of nowPlaying(); track movie.id) {
+            <li>
+              <article
+                class="group rounded-3xl border border-slate-800 bg-slate-900/50 p-4 shadow-[0_30px_60px_-50px_rgba(15,23,42,0.9)] transition hover:-translate-y-1 hover:border-slate-600 hover:bg-slate-900/80"
+              >
+                <div
+                  class="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 shadow-inner"
                 >
-                  <div
-                    class="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 shadow-inner"
-                  >
-                    <div class="aspect-[2/3] w-full">
-                      @if (movie.posterPath) {
-                        <img
-                          [ngSrc]="'https://image.tmdb.org/t/p/w342' + movie.posterPath"
-                          [alt]="movie.title"
-                          width="342"
-                          height="513"
-                          sizes="(min-width: 1024px) 18rem, (min-width: 640px) 40vw, 80vw"
-                          class="h-full w-full object-cover"
-                        />
-                      } @else {
-                        <div
-                          class="flex h-full w-full items-center justify-center bg-slate-800 text-xs uppercase tracking-[0.3em] text-slate-400"
-                        >
-                          Sin poster
-                        </div>
-                      }
-                    </div>
+                  <div class="aspect-[2/3] w-full">
+                    @if (movie.posterPath) {
+                      <img
+                        [ngSrc]="'https://image.tmdb.org/t/p/w342' + movie.posterPath"
+                        [alt]="movie.title"
+                        width="342"
+                        height="513"
+                        sizes="(min-width: 1024px) 18rem, (min-width: 640px) 40vw, 80vw"
+                        class="h-full w-full object-cover"
+                      />
+                    } @else {
+                      <div
+                        class="flex h-full w-full items-center justify-center bg-slate-800 text-xs uppercase tracking-[0.3em] text-slate-400"
+                      >
+                        Sin poster
+                      </div>
+                    }
                   </div>
-                  <div class="mt-4 space-y-2">
-                    <div class="flex items-center gap-2 text-xs text-slate-400">
-                      <span class="rounded-full border border-slate-700 px-2 py-0.5">
-                        {{ movie.originalLanguage | uppercase }}
+                </div>
+                <div class="mt-4 space-y-2">
+                  <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <span class="rounded-full border border-slate-700 px-2 py-0.5">
+                      {{ movie.originalLanguage | uppercase }}
+                    </span>
+                    @if (movie.releaseDate) {
+                      <span class="text-slate-500">
+                        {{ movie.releaseDate | date: 'yyyy' }}
                       </span>
-                      @if (movie.releaseDate) {
-                        <span class="text-slate-500">
-                          {{ movie.releaseDate | date: 'yyyy' }}
-                        </span>
-                      }
-                    </div>
-                    <h3 class="text-base font-semibold text-slate-100">{{ movie.title }}</h3>
+                    }
                   </div>
-                </article>
-              }
-            </div>
+                  <h3 class="text-base font-semibold text-slate-100">{{ movie.title }}</h3>
+                </div>
+              </article>
+            </li>
           }
-        </div>
+        </ul>
       }
     }
   </div>
