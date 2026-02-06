@@ -1,57 +1,70 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { catchError, map, of, throwError } from 'rxjs';
+import { inject } from '@angular/core';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { EMPTY, catchError, map, switchMap, tap } from 'rxjs';
 
 import { TmdbMoviesApiService } from '../data-access/tmdb-movies-api.service';
 import { mapMovieListResponseDtoToPaginatedResult } from '../domain/mappers/pagination.mapper';
 import { MovieSummary } from '../domain/models/movie-summary.model';
 
-@Injectable({ providedIn: 'root' })
-export class HomeStore {
-  private readonly api = inject(TmdbMoviesApiService);
+type HomeRequest = {
+  page: number;
+  limit: number;
+  language: string;
+};
 
-  private readonly request = signal<
-    | {
-        page: number;
-        limit: number;
-        language: string;
-      }
-    | undefined
-  >(undefined);
+type HomeState = {
+  request: HomeRequest | null;
+  nowPlaying: MovieSummary[];
+  loading: boolean;
+  error: string | null;
+};
 
-  private readonly nowPlayingResource = rxResource<
-    MovieSummary[],
-    | {
-        page: number;
-        limit: number;
-        language: string;
-      }
-    | undefined
-  >({
-    params: () => this.request(),
-    defaultValue: [],
-    stream: ({ params }) => {
-      if (!params) {
-        return of([]);
-      }
+const initialState: HomeState = {
+  request: null,
+  nowPlaying: [],
+  loading: false,
+  error: null,
+};
 
-      return this.api.getNowPlaying(params.page, { language: params.language }).pipe(
-        map((dto) => mapMovieListResponseDtoToPaginatedResult(dto)),
-        map((result) => result.items.slice(0, params.limit)),
-        catchError(() => throwError(() => new Error('No se pudieron cargar las peliculas.'))),
-      );
-    },
-  });
+export const HomeStore = signalStore(
+  { providedIn: 'root' },
+  withState(initialState),
+  withMethods((store) => {
+    const api = inject(TmdbMoviesApiService);
 
-  readonly nowPlaying = this.nowPlayingResource.value;
-  readonly loading = this.nowPlayingResource.isLoading;
-  readonly error = computed(() => this.nowPlayingResource.error()?.message ?? null);
+    const loadNowPlaying = rxMethod<HomeRequest>((params$) =>
+      params$.pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        switchMap((params) =>
+          api.getNowPlaying(params.page, { language: params.language }).pipe(
+            map((dto) => mapMovieListResponseDtoToPaginatedResult(dto)),
+            map((result) => result.items.slice(0, params.limit)),
+            tap((items) => patchState(store, { nowPlaying: items, loading: false })),
+            catchError(() => {
+              patchState(store, {
+                loading: false,
+                error: 'No se pudieron cargar las peliculas.',
+              });
+              return EMPTY;
+            }),
+          ),
+        ),
+      ),
+    );
 
-  loadNowPlayingTitles(limit = 10): void {
-    this.request.set({ page: 1, limit, language: 'es-ES' });
-  }
-
-  reload(): void {
-    this.nowPlayingResource.reload();
-  }
-}
+    return {
+      loadNowPlayingTitles: (limit = 10) => {
+        const request: HomeRequest = { page: 1, limit, language: 'es-ES' };
+        patchState(store, { request });
+        loadNowPlaying(request);
+      },
+      reload: () => {
+        const request = store.request();
+        if (request) {
+          loadNowPlaying(request);
+        }
+      },
+    };
+  }),
+);

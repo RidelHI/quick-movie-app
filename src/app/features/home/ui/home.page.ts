@@ -2,7 +2,7 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { AuthService } from '../../../core/auth/auth.service';
+import { AuthStore } from '../../../core/auth/state/auth.store';
 import { HomeStore } from '../state/home.store';
 
 @Component({
@@ -13,7 +13,7 @@ import { HomeStore } from '../state/home.store';
 })
 export class HomePageComponent implements OnInit {
   private readonly store = inject(HomeStore);
-  private readonly auth = inject(AuthService);
+  private readonly auth = inject(AuthStore);
 
   readonly nowPlaying = this.store.nowPlaying;
   readonly loading = this.store.loading;

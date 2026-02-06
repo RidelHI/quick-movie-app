@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 
-import { AuthService } from '../auth.service';
+import { AuthStore } from '../state/auth.store';
 
 @Component({
   selector: 'app-auth-callback-page',
@@ -12,7 +12,7 @@ import { AuthService } from '../auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthCallbackPageComponent implements OnInit {
-  private readonly auth = inject(AuthService);
+  private readonly auth = inject(AuthStore);
 
   ngOnInit(): void {
     this.auth.completeLogin();
