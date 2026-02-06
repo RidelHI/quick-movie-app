@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -27,14 +27,7 @@ export class TmdbMoviesApiService {
 
     return this.http.get<TmdbPaginatedResponse<TmdbMovieListItemDto>>(
       `${this.config.apiBaseUrlV3}/movie/now_playing`,
-      { headers: this.buildAuthHeaders(this.config.readAccessToken), params },
+      { params },
     );
-  }
-
-  private buildAuthHeaders(token: string): HttpHeaders {
-    return new HttpHeaders({
-      accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    });
   }
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -28,7 +28,6 @@ export class TmdbAuthApiService {
     return this.http.post<TmdbRequestTokenResponse>(
       `${this.config.apiBaseUrlV4}/auth/request_token`,
       { redirect_to: redirectTo },
-      { headers: this.buildAuthHeaders(this.config.readAccessToken) },
     );
   }
 
@@ -36,14 +35,6 @@ export class TmdbAuthApiService {
     return this.http.post<TmdbAccessTokenResponse>(
       `${this.config.apiBaseUrlV4}/auth/access_token`,
       { request_token: requestToken },
-      { headers: this.buildAuthHeaders(this.config.readAccessToken) },
     );
-  }
-
-  private buildAuthHeaders(token: string): HttpHeaders {
-    return new HttpHeaders({
-      accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    });
   }
 }

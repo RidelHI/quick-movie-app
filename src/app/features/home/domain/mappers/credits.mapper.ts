@@ -1,7 +1,11 @@
 import { TmdbCreditsDto, TmdbCastDto, TmdbCrewDto } from '../dto/tmdb-credits.dto';
-import { CastMember, CrewMember, MovieCredits } from '../models/credits.model';
+import {
+  CastMember,
+  CrewMember,
+  Credits,
+} from '../../../../features/movie-detail/domain/models/credits.model';
 
-export function mapCreditsDtoToMovieCredits(dto: TmdbCreditsDto): MovieCredits {
+export function mapCreditsDtoToMovieCredits(dto: TmdbCreditsDto): Credits {
   return {
     id: dto.id,
     cast: (dto.cast ?? []).map(mapCastMember),

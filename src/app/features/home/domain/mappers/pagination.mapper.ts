@@ -1,6 +1,6 @@
 import { TmdbPaginatedResponse } from '../dto/tmdb-paginated-response.dto';
 import { TmdbMovieListItemDto } from '../dto/tmdb-movie-list-item.dto';
-import { PaginatedResult } from '../models/paginated-result.model';
+import { PaginatedResult } from '../../../../shared/models/paginated-result.model';
 import { MovieSummary } from '../models/movie-summary.model';
 import { mapMovieListItemDtoToSummary } from './movie.mapper';
 

@@ -2,8 +2,7 @@
   <div class="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-12">
     <header class="space-y-4">
       <p
-        class="inline-flex w-fit items-center gap-2 rounded-full border border-slate-800 bg-slate-900/70 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-slate-300"
-      >
+        class="inline-flex w-fit items-center gap-2 rounded-full border border-slate-800 bg-slate-900/70 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-slate-300">
         Now Playing
       </p>
       <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
@@ -15,97 +14,77 @@
             Demo: primeros 10 titulos de Now Playing. Explora con el teclado usando las flechas.
           </p>
         </div>
-        <a
-          routerLink="/auth"
-          class="inline-flex items-center justify-center rounded-full border border-slate-800 px-5 py-2 text-sm font-medium text-slate-200 transition hover:border-slate-600 hover:text-white"
-        >
+        <a routerLink="/auth"
+          class="inline-flex items-center justify-center rounded-full border border-slate-800 px-5 py-2 text-sm font-medium text-slate-200 transition hover:border-slate-600 hover:text-white">
           Configurar sesion
         </a>
       </div>
     </header>
 
     @if (!isAuthenticated()) {
-      <div
-        class="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 text-slate-200 shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]"
-      >
-        <p class="text-lg font-medium">Debes autenticarte para continuar.</p>
-        <p class="mt-2 text-sm text-slate-400">
-          Conecta tu cuenta de TMDB para cargar los posters oficiales.
-        </p>
-        <button
-          type="button"
-          (click)="login()"
-          class="mt-6 inline-flex items-center justify-center rounded-full bg-slate-50 px-6 py-2 text-sm font-semibold text-slate-900 transition hover:bg-white"
-        >
-          Conectar con TMDB
-        </button>
-      </div>
+    <div
+      class="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 text-slate-200 shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
+      <p class="text-lg font-medium">Debes autenticarte para continuar.</p>
+      <p class="mt-2 text-sm text-slate-400">
+        Conecta tu cuenta de TMDB para cargar los posters oficiales.
+      </p>
+      <button type="button" (click)="login()"
+        class="mt-6 inline-flex items-center justify-center rounded-full bg-slate-50 px-6 py-2 text-sm font-semibold text-slate-900 transition hover:bg-white">
+        Conectar con TMDB
+      </button>
+    </div>
     } @else {
-      @if (loading()) {
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6" role="status">
-          <p class="text-sm text-slate-300" aria-live="polite">Cargando...</p>
-        </div>
-      } @else if (error()) {
-        <div
-          class="rounded-2xl border border-red-500/40 bg-red-500/10 p-6 text-red-100"
-          role="alert"
-        >
-          <p class="text-sm">{{ error() }}</p>
-          <button
-            type="button"
-            (click)="reload()"
-            class="mt-4 inline-flex items-center justify-center rounded-full border border-red-400/60 px-5 py-2 text-sm font-semibold text-red-100 transition hover:border-red-300"
-          >
-            Reintentar
-          </button>
-        </div>
-      } @else {
-        <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-label="Peliculas recientes">
-          @for (movie of nowPlaying(); track movie.id) {
-            <li>
-              <article
-                class="group rounded-3xl border border-slate-800 bg-slate-900/50 p-4 shadow-[0_30px_60px_-50px_rgba(15,23,42,0.9)] transition hover:-translate-y-1 hover:border-slate-600 hover:bg-slate-900/80"
-              >
-                <div
-                  class="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 shadow-inner"
-                >
-                  <div class="aspect-[2/3] w-full">
-                    @if (movie.posterPath) {
-                      <img
-                        [ngSrc]="'https://image.tmdb.org/t/p/w342' + movie.posterPath"
-                        [alt]="movie.title"
-                        width="342"
-                        height="513"
-                        sizes="(min-width: 1024px) 18rem, (min-width: 640px) 40vw, 80vw"
-                        class="h-full w-full object-cover"
-                      />
-                    } @else {
-                      <div
-                        class="flex h-full w-full items-center justify-center bg-slate-800 text-xs uppercase tracking-[0.3em] text-slate-400"
-                      >
-                        Sin poster
-                      </div>
-                    }
-                  </div>
-                </div>
-                <div class="mt-4 space-y-2">
-                  <div class="flex items-center gap-2 text-xs text-slate-400">
-                    <span class="rounded-full border border-slate-700 px-2 py-0.5">
-                      {{ movie.originalLanguage | uppercase }}
-                    </span>
-                    @if (movie.releaseDate) {
-                      <span class="text-slate-500">
-                        {{ movie.releaseDate | date: 'yyyy' }}
-                      </span>
-                    }
-                  </div>
-                  <h3 class="text-base font-semibold text-slate-100">{{ movie.title }}</h3>
-                </div>
-              </article>
-            </li>
-          }
-        </ul>
+    @if (loading()) {
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6" role="status">
+      <p class="text-sm text-slate-300" aria-live="polite">Cargando...</p>
+    </div>
+    } @else if (error()) {
+    <div class="rounded-2xl border border-red-500/40 bg-red-500/10 p-6 text-red-100" role="alert">
+      <p class="text-sm">{{ error() }}</p>
+      <button type="button" (click)="reload()"
+        class="mt-4 inline-flex items-center justify-center rounded-full border border-red-400/60 px-5 py-2 text-sm font-semibold text-red-100 transition hover:border-red-300">
+        Reintentar
+      </button>
+    </div>
+    } @else {
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-label="Peliculas recientes">
+      @for (movie of nowPlaying(); track movie.id) {
+      <li>
+        <a [routerLink]="['/movies', movie.id]"
+          class="group block rounded-3xl border border-slate-800 bg-slate-900/50 p-4 shadow-[0_30px_60px_-50px_rgba(15,23,42,0.9)] transition hover:-translate-y-1 hover:border-slate-600 hover:bg-slate-900/80"
+          aria-label="Ver detalles de {{ movie.title }}">
+          <div class="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 shadow-inner">
+            <div class="aspect-[2/3] w-full">
+              @if (movie.posterPath) {
+              <img [ngSrc]="'https://image.tmdb.org/t/p/w342' + movie.posterPath" [alt]="movie.title" width="342"
+                height="513" sizes="(min-width: 1024px) 18rem, (min-width: 640px) 40vw, 80vw"
+                class="h-full w-full object-cover" />
+              } @else {
+              <div
+                class="flex h-full w-full items-center justify-center bg-slate-800 text-xs uppercase tracking-[0.3em] text-slate-400">
+                Sin poster
+              </div>
+              }
+            </div>
+          </div>
+          <div class="mt-4 space-y-2">
+            <div class="flex items-center gap-2 text-xs text-slate-400">
+              <span class="rounded-full border border-slate-700 px-2 py-0.5">
+                {{ movie.originalLanguage | uppercase }}
+              </span>
+              @if (movie.releaseDate) {
+              <span class="text-slate-500">
+                {{ movie.releaseDate | date: 'yyyy' }}
+              </span>
+              }
+            </div>
+            <h3 class="text-base font-semibold text-slate-100">{{ movie.title }}</h3>
+          </div>
+        </a>
+      </li>
       }
+    </ul>
+    }
     }
   </div>
 </section>

@@ -1,0 +1,261 @@
+<section class="min-h-screen bg-slate-950 text-slate-100">
+  <div class="mx-auto flex max-w-6xl flex-col gap-6 px-6 pt-10">
+    <a
+      routerLink="/home"
+      class="inline-flex w-fit items-center gap-2 rounded-full border border-slate-800 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-300 transition hover:border-slate-600 hover:text-white"
+    >
+      Volver a home
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="mx-auto max-w-6xl px-6 py-12">
+      <div class="rounded-3xl border border-slate-800 bg-slate-900/60 p-8" role="status">
+        <p class="text-sm text-slate-300" aria-live="polite">Cargando detalles...</p>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="mx-auto max-w-6xl px-6 py-12">
+      <div
+        class="rounded-3xl border border-red-500/40 bg-red-500/10 p-8 text-red-100"
+        role="alert"
+      >
+        <p class="text-sm">{{ error() }}</p>
+        <button
+          type="button"
+          (click)="reload()"
+          class="mt-6 inline-flex items-center justify-center rounded-full border border-red-400/60 px-5 py-2 text-sm font-semibold text-red-100 transition hover:border-red-300"
+        >
+          Reintentar
+        </button>
+      </div>
+    </div>
+  } @else if (movie(); as movie) {
+    <div class="relative mt-8 overflow-hidden">
+      <div class="absolute inset-0 -z-10">
+        @if (movie.backdropPath) {
+          <img
+            [ngSrc]="'https://image.tmdb.org/t/p/w1280' + movie.backdropPath"
+            [alt]="movie.title"
+            width="1280"
+            height="720"
+            class="h-full w-full object-cover opacity-40"
+          />
+        } @else {
+          <div class="h-full w-full bg-slate-900"></div>
+        }
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/70 to-slate-950"></div>
+      </div>
+
+      <div class="mx-auto max-w-6xl px-6 py-12">
+        <div class="grid gap-10 lg:grid-cols-[260px_1fr]">
+          <div
+            class="overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/70 shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]"
+          >
+            @if (movie.posterPath) {
+              <img
+                [ngSrc]="'https://image.tmdb.org/t/p/w500' + movie.posterPath"
+                [alt]="movie.title"
+                width="500"
+                height="750"
+                class="h-full w-full object-cover"
+              />
+            } @else {
+              <div
+                class="flex h-full min-h-[360px] w-full items-center justify-center bg-slate-800 text-xs uppercase tracking-[0.3em] text-slate-400"
+              >
+                Sin poster
+              </div>
+            }
+          </div>
+
+          <div class="space-y-6">
+            <div class="space-y-3">
+              <p
+                class="inline-flex w-fit items-center gap-2 rounded-full border border-slate-800 bg-slate-900/70 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-slate-300"
+              >
+                Movie Detail
+              </p>
+              <h1 class="text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl">
+                {{ movie.title }}
+              </h1>
+              @if (movie.tagline) {
+                <p class="text-sm italic text-slate-300">“{{ movie.tagline }}”</p>
+              }
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 text-xs text-slate-300">
+              @if (movie.releaseDate) {
+                <span class="rounded-full border border-slate-700 px-3 py-1">
+                  {{ movie.releaseDate | date: 'yyyy' }}
+                </span>
+              }
+              @if (movie.runtime) {
+                <span class="rounded-full border border-slate-700 px-3 py-1">
+                  {{ movie.runtime }} min
+                </span>
+              }
+              <span class="rounded-full border border-slate-700 px-3 py-1">
+                {{ movie.originalLanguage | uppercase }}
+              </span>
+              <span class="rounded-full border border-slate-700 px-3 py-1">
+                {{ movie.voteAverage | number: '1.1-1' }} / 10
+              </span>
+              <span class="rounded-full border border-slate-700 px-3 py-1">
+                {{ movie.voteCount | number }} votos
+              </span>
+            </div>
+
+            <p class="text-sm leading-relaxed text-slate-300">{{ movie.overview }}</p>
+
+            @if (movie.genres.length) {
+              <ul class="flex flex-wrap gap-2">
+                @for (genre of movie.genres; track genre.id) {
+                  <li class="rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1 text-xs">
+                    {{ genre.name }}
+                  </li>
+                }
+              </ul>
+            }
+
+            @if (movie.homepage) {
+              <a
+                [href]="movie.homepage"
+                target="_blank"
+                rel="noreferrer"
+                class="inline-flex items-center gap-2 text-sm font-semibold text-slate-100 transition hover:text-white"
+              >
+                Sitio oficial
+              </a>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mx-auto max-w-6xl px-6 pb-16">
+      <div class="grid gap-8 lg:grid-cols-3">
+        <div class="lg:col-span-2">
+          <div class="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+            <h2 class="text-lg font-semibold text-slate-100">Ficha tecnica</h2>
+            <dl class="mt-4 space-y-3 text-sm text-slate-300">
+              <div class="flex items-center justify-between gap-6">
+                <dt class="text-slate-400">Titulo original</dt>
+                <dd class="text-right">{{ movie.originalTitle }}</dd>
+              </div>
+              <div class="flex items-center justify-between gap-6">
+                <dt class="text-slate-400">Fecha de estreno</dt>
+                <dd class="text-right">
+                  @if (movie.releaseDate) {
+                    {{ movie.releaseDate | date: 'longDate' }}
+                  } @else {
+                    —
+                  }
+                </dd>
+              </div>
+              <div class="flex items-center justify-between gap-6">
+                <dt class="text-slate-400">Estado</dt>
+                <dd class="text-right">{{ movie.status || '—' }}</dd>
+              </div>
+              <div class="flex items-center justify-between gap-6">
+                <dt class="text-slate-400">Clasificacion</dt>
+                <dd class="text-right">{{ movie.adult ? 'Adulto' : 'Todo publico' }}</dd>
+              </div>
+              <div class="flex items-center justify-between gap-6">
+                <dt class="text-slate-400">Presupuesto</dt>
+                <dd class="text-right">
+                  @if (movie.budget > 0) {
+                    {{ movie.budget | currency: 'USD':'symbol':'1.0-0' }}
+                  } @else {
+                    —
+                  }
+                </dd>
+              </div>
+              <div class="flex items-center justify-between gap-6">
+                <dt class="text-slate-400">Recaudacion</dt>
+                <dd class="text-right">
+                  @if (movie.revenue > 0) {
+                    {{ movie.revenue | currency: 'USD':'symbol':'1.0-0' }}
+                  } @else {
+                    —
+                  }
+                </dd>
+              </div>
+              @if (movie.imdbId) {
+                <div class="flex items-center justify-between gap-6">
+                  <dt class="text-slate-400">IMDb</dt>
+                  <dd class="text-right">
+                    <a
+                      [href]="'https://www.imdb.com/title/' + movie.imdbId"
+                      target="_blank"
+                      rel="noreferrer"
+                      class="text-slate-100 hover:text-white"
+                    >
+                      {{ movie.imdbId }}
+                    </a>
+                  </dd>
+                </div>
+              }
+            </dl>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+            <h3 class="text-base font-semibold text-slate-100">Produccion</h3>
+            @if (movie.productionCompanies.length) {
+              <ul class="mt-4 space-y-2 text-sm text-slate-300">
+                @for (company of movie.productionCompanies; track company.id) {
+                  <li class="flex items-center justify-between gap-4">
+                    <span>{{ company.name }}</span>
+                    <span class="text-xs text-slate-500">{{ company.originCountry }}</span>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="mt-4 text-sm text-slate-400">Sin datos de produccion.</p>
+            }
+          </div>
+
+          <div class="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+            <h3 class="text-base font-semibold text-slate-100">Idiomas</h3>
+            @if (movie.spokenLanguages.length) {
+              <ul class="mt-4 space-y-2 text-sm text-slate-300">
+                @for (language of movie.spokenLanguages; track language.iso639_1) {
+                  <li class="flex items-center justify-between gap-4">
+                    <span>{{ language.name }}</span>
+                    <span class="text-xs text-slate-500">{{ language.englishName }}</span>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="mt-4 text-sm text-slate-400">Sin datos de idioma.</p>
+            }
+          </div>
+
+          <div class="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+            <h3 class="text-base font-semibold text-slate-100">Paises</h3>
+            @if (movie.productionCountries.length) {
+              <ul class="mt-4 space-y-2 text-sm text-slate-300">
+                @for (country of movie.productionCountries; track country.iso3166_1) {
+                  <li class="flex items-center justify-between gap-4">
+                    <span>{{ country.name }}</span>
+                    <span class="text-xs text-slate-500">{{ country.iso3166_1 }}</span>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="mt-4 text-sm text-slate-400">Sin datos de pais.</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="mx-auto max-w-6xl px-6 py-12">
+      <div class="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 text-slate-200">
+        <p class="text-sm">No se encontraron detalles para esta pelicula.</p>
+      </div>
+    </div>
+  }
+</section>

@@ -1,27 +1,19 @@
-import { TmdbMovieListItemDto } from '../dto/tmdb-movie-list-item.dto';
+import { Genre } from '../../../../shared/models/genre.model';
+import { MovieBase } from '../../../../shared/models/movie-base.model';
+
 import {
   TmdbGenreDto,
   TmdbMovieDetailDto,
   TmdbProductionCompanyDto,
   TmdbProductionCountryDto,
   TmdbSpokenLanguageDto,
-} from '../../../movie-detail/domain/dto/tmdb-movie-detail.dto';
-import { Genre } from '../../../../shared/models/genre.model';
-import { MovieBase } from '../../../../shared/models/movie-base.model';
+} from '../dto/tmdb-movie-detail.dto';
 import {
   MovieDetail,
   ProductionCompany,
   ProductionCountry,
   SpokenLanguage,
-} from '../../../../features/movie-detail/domain/models/movie-detail.model';
-import { MovieSummary } from '../models/movie-summary.model';
-
-export function mapMovieListItemDtoToSummary(dto: TmdbMovieListItemDto): MovieSummary {
-  return {
-    ...mapMovieBaseFromListItem(dto),
-    genreIds: dto.genre_ids ?? [],
-  };
-}
+} from '../models/movie-detail.model';
 
 export function mapMovieDetailDtoToDetail(dto: TmdbMovieDetailDto): MovieDetail {
   return {
@@ -44,23 +36,6 @@ export function mapGenreDtoToGenre(dto: TmdbGenreDto): Genre {
   return {
     id: dto.id,
     name: dto.name,
-  };
-}
-
-function mapMovieBaseFromListItem(dto: TmdbMovieListItemDto): MovieBase {
-  return {
-    id: dto.id,
-    title: dto.title,
-    originalTitle: dto.original_title,
-    overview: dto.overview ?? '',
-    posterPath: dto.poster_path ?? null,
-    backdropPath: dto.backdrop_path ?? null,
-    releaseDate: normalizeDateOrNull(dto.release_date),
-    originalLanguage: dto.original_language,
-    adult: dto.adult,
-    popularity: dto.popularity,
-    voteAverage: dto.vote_average,
-    voteCount: dto.vote_count,
   };
 }
 

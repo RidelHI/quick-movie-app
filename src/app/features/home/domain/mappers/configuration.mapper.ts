@@ -1,5 +1,5 @@
 import { TmdbConfigurationDto } from '../dto/tmdb-configuration.dto';
-import { ImageConfig } from '../models/image-config.model';
+import { ImageConfig } from '../../../../shared/models/image-config.model';
 
 export function mapConfigurationDtoToImageConfig(dto: TmdbConfigurationDto): ImageConfig {
   return {
