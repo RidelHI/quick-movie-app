@@ -1,6 +1,10 @@
 {
+  "editor.quickSuggestions": {
+    "strings": true
+  },
   "tailwindCSS.includeLanguages": {
     "typescript": "html"
   },
-  "tailwindCSS.emmetCompletions": true
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.experimental.configFile": "src/styles.css"
 }
