@@ -12,20 +12,20 @@ export class HomeStore {
 
   private readonly request = signal<
     | {
-      page: number;
-      limit: number;
-      language: string;
-    }
+        page: number;
+        limit: number;
+        language: string;
+      }
     | undefined
   >(undefined);
 
   private readonly nowPlayingResource = rxResource<
     MovieSummary[],
     | {
-      page: number;
-      limit: number;
-      language: string;
-    }
+        page: number;
+        limit: number;
+        language: string;
+      }
     | undefined
   >({
     params: () => this.request(),
