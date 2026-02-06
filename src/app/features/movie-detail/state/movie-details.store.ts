@@ -8,53 +8,53 @@ import { mapMovieDetailDtoToDetail } from '../domain/mappers/movie-detail.mapper
 import { MovieDetail } from '../domain/models/movie-detail.model';
 
 type MovieDetailsRequest = {
-    id: number;
-    language: string;
+  id: number;
+  language: string;
 };
 
 type MovieDetailsState = {
-    request: MovieDetailsRequest | null;
-    movie: MovieDetail | null;
-    loading: boolean;
-    error: string | null;
+  request: MovieDetailsRequest | null;
+  movie: MovieDetail | null;
+  loading: boolean;
+  error: string | null;
 };
 
 const initialState: MovieDetailsState = {
-    request: null,
-    movie: null,
-    loading: false,
-    error: null,
+  request: null,
+  movie: null,
+  loading: false,
+  error: null,
 };
 
 export const MovieDetailsStore = signalStore(
-    { providedIn: 'root' },
-    withState(initialState),
-    withComputed((store) => ({
-        movie: computed(() => store.movie()),
-        loading: computed(() => store.loading()),
-        error: computed(() => store.error()),
-    })),
-    withMethods((store) => {
-        const api = inject(TmdbMovieDetailsApiService);
+  { providedIn: 'root' },
+  withState(initialState),
+  withComputed((store) => ({
+    movie: computed(() => store.movie()),
+    loading: computed(() => store.loading()),
+    error: computed(() => store.error()),
+  })),
+  withMethods((store) => {
+    const api = inject(TmdbMovieDetailsApiService);
 
     const loadMovie = rxMethod<MovieDetailsRequest>((request$) =>
       request$.pipe(
         tap(() => patchState(store, { loading: true, error: null, movie: null })),
-                switchMap((request) =>
-                    api.getMovieDetails(request.id, request.language).pipe(
-                        map((dto) => mapMovieDetailDtoToDetail(dto)),
-                        tap((movie) => patchState(store, { movie, loading: false })),
-                        catchError(() => {
-                            patchState(store, {
-                                error: 'No se pudieron cargar los detalles de la pelicula.',
-                                loading: false,
-                            });
-                            return EMPTY;
-                        }),
-                    ),
-                ),
-            ),
-        );
+        switchMap((request) =>
+          api.getMovieDetails(request.id, request.language).pipe(
+            map((dto) => mapMovieDetailDtoToDetail(dto)),
+            tap((movie) => patchState(store, { movie, loading: false })),
+            catchError(() => {
+              patchState(store, {
+                error: 'No se pudieron cargar los detalles de la pelicula.',
+                loading: false,
+              });
+              return EMPTY;
+            }),
+          ),
+        ),
+      ),
+    );
 
     return {
       loadMovie: (id: number, language = 'es-ES') => {

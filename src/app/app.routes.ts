@@ -12,7 +12,8 @@ export const routes: Routes = [
   },
   {
     path: 'movies/:id',
-    loadComponent: () => import('./features/movie-detail/ui/movie-details/movie-details').then((m) => m.MovieDetails),
+    loadComponent: () =>
+      import('./features/movie-detail/ui/movie-details/movie-details').then((m) => m.MovieDetails),
   },
   {
     path: 'auth',

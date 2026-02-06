@@ -16,10 +16,7 @@
     </div>
   } @else if (error()) {
     <div class="mx-auto max-w-6xl px-6 py-12">
-      <div
-        class="rounded-3xl border border-red-500/40 bg-red-500/10 p-8 text-red-100"
-        role="alert"
-      >
+      <div class="rounded-3xl border border-red-500/40 bg-red-500/10 p-8 text-red-100" role="alert">
         <p class="text-sm">{{ error() }}</p>
         <button
           type="button"
@@ -44,7 +41,9 @@
         } @else {
           <div class="h-full w-full bg-slate-900"></div>
         }
-        <div class="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/70 to-slate-950"></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/70 to-slate-950"
+        ></div>
       </div>
 
       <div class="mx-auto max-w-6xl px-6 py-12">
@@ -111,7 +110,9 @@
             @if (movie.genres.length) {
               <ul class="flex flex-wrap gap-2">
                 @for (genre of movie.genres; track genre.id) {
-                  <li class="rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1 text-xs">
+                  <li
+                    class="rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1 text-xs"
+                  >
                     {{ genre.name }}
                   </li>
                 }
@@ -165,7 +166,7 @@
                 <dt class="text-slate-400">Presupuesto</dt>
                 <dd class="text-right">
                   @if (movie.budget > 0) {
-                    {{ movie.budget | currency: 'USD':'symbol':'1.0-0' }}
+                    {{ movie.budget | currency: 'USD' : 'symbol' : '1.0-0' }}
                   } @else {
                     —
                   }
@@ -175,7 +176,7 @@
                 <dt class="text-slate-400">Recaudacion</dt>
                 <dd class="text-right">
                   @if (movie.revenue > 0) {
-                    {{ movie.revenue | currency: 'USD':'symbol':'1.0-0' }}
+                    {{ movie.revenue | currency: 'USD' : 'symbol' : '1.0-0' }}
                   } @else {
                     —
                   }
