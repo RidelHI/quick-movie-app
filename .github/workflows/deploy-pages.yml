@@ -71,10 +71,13 @@ jobs:
       - name: Build site
         run: bun run build -- --configuration production --base-href "/${{ github.event.repository.name }}/"
 
+      - name: Add SPA fallback
+        run: cp dist/quick-movie-app/browser/index.html dist/quick-movie-app/browser/404.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/quick-movie-app
+          path: dist/quick-movie-app/browser
 
       - name: Deploy to GitHub Pages
         id: deployment
