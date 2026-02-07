@@ -1,5 +1,26 @@
 export const environment = {
   production: false,
+  observability: {
+    logger: {
+      minimumLevel: 'debug',
+      consoleEnabled: true,
+      persistenceEnabled: true,
+      maxEntries: 300,
+      storageKey: 'quick-movie-app.logs',
+      includeStackTrace: true,
+    },
+    sentry: {
+      enabled: false,
+      dsn: '',
+      environment: 'development',
+      release: undefined,
+      enableLogs: true,
+      tracesSampleRate: 0.2,
+      tracePropagationTargets: ['localhost', 'http://localhost:4200'],
+      attachStacktrace: true,
+      sendDefaultPii: false,
+    },
+  },
   tmdb: {
     apiBaseUrlV3: 'https://api.themoviedb.org/3',
     apiBaseUrlV4: 'https://api.themoviedb.org/4',

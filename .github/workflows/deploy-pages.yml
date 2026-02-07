@@ -55,10 +55,38 @@ jobs:
         env:
           TMDB_READ_ACCESS_TOKEN: ${{ secrets.TMDB_READ_ACCESS_TOKEN }}
           TMDB_REDIRECT_URI: ${{ secrets.TMDB_REDIRECT_URI }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: |
+          if [ -n "$SENTRY_DSN" ]; then
+            SENTRY_ENABLED=true
+          else
+            SENTRY_ENABLED=false
+          fi
+
           cat <<EOF > src/environments/environment.production.ts
           export const environment = {
             production: true,
+            observability: {
+              logger: {
+                minimumLevel: 'warn',
+                consoleEnabled: false,
+                persistenceEnabled: true,
+                maxEntries: 500,
+                storageKey: 'quick-movie-app.logs',
+                includeStackTrace: true,
+              },
+              sentry: {
+                enabled: ${SENTRY_ENABLED},
+                dsn: '${SENTRY_DSN}',
+                environment: 'production',
+                release: '${{ github.sha }}',
+                enableLogs: true,
+                tracesSampleRate: 0.1,
+                tracePropagationTargets: ['localhost', 'https://api.themoviedb.org'],
+                attachStacktrace: true,
+                sendDefaultPii: false,
+              },
+            },
             tmdb: {
               apiBaseUrlV3: 'https://api.themoviedb.org/3',
               apiBaseUrlV4: 'https://api.themoviedb.org/4',

@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
+import { LoggerService } from '../../../core/logging/logger.service';
 import { TmdbMoviesApiService } from '../data-access/tmdb-movies-api.service';
 import { TmdbMovieListItemDto } from '../domain/dto/tmdb-movie-list-item.dto';
 import { TmdbPaginatedResponse } from '../domain/dto/tmdb-paginated-response.dto';
@@ -11,6 +12,7 @@ type HomeStoreInstance = InstanceType<typeof HomeStore>;
 describe('HomeStore', () => {
   let store: HomeStoreInstance;
   let api: { getNowPlaying: ReturnType<typeof vi.fn> };
+  let logger: { captureException: ReturnType<typeof vi.fn> };
 
   const buildMovie = (id: number): TmdbMovieListItemDto => ({
     adult: false,
@@ -38,9 +40,14 @@ describe('HomeStore', () => {
 
   beforeEach(() => {
     api = { getNowPlaying: vi.fn() };
+    logger = { captureException: vi.fn() };
 
     TestBed.configureTestingModule({
-      providers: [HomeStore, { provide: TmdbMoviesApiService, useValue: api }],
+      providers: [
+        HomeStore,
+        { provide: TmdbMoviesApiService, useValue: api },
+        { provide: LoggerService, useValue: logger },
+      ],
     });
 
     store = TestBed.inject(HomeStore);

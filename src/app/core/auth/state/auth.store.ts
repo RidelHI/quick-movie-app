@@ -4,6 +4,7 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { EMPTY, catchError, switchMap, tap } from 'rxjs';
 
+import { LoggerService } from '../../logging/logger.service';
 import { TMDB_CONFIG, TmdbConfig } from '../../../shared/config/tmdb.config';
 import { TmdbAuthApiService } from '../tmdb-auth-api.service';
 
@@ -30,6 +31,7 @@ export const AuthStore = signalStore(
     const api = inject(TmdbAuthApiService);
     const router = inject(Router);
     const config = inject<TmdbConfig>(TMDB_CONFIG);
+    const logger = inject(LoggerService);
 
     const startLogin = rxMethod<string>((redirect$) =>
       redirect$.pipe(
@@ -40,7 +42,8 @@ export const AuthStore = signalStore(
               sessionStorage.setItem(REQUEST_TOKEN_KEY, response.request_token);
               window.location.assign(buildApprovalUrl(response.request_token));
             }),
-            catchError(() => {
+            catchError((error) => {
+              logger.captureException(error, 'Failed to start TMDB login flow', { redirectTo });
               patchState(store, { error: 'No se pudo iniciar sesion.' });
               return EMPTY;
             }),
@@ -65,7 +68,8 @@ export const AuthStore = signalStore(
               patchState(store, { accessToken: response.access_token, error: null });
               void router.navigateByUrl('/home');
             }),
-            catchError(() => {
+            catchError((error) => {
+              logger.captureException(error, 'Failed to complete TMDB login flow');
               sessionStorage.removeItem(REQUEST_TOKEN_KEY);
               patchState(store, { error: 'No se pudo completar la sesion.' });
               return EMPTY;
@@ -78,6 +82,7 @@ export const AuthStore = signalStore(
     return {
       startLogin: (redirectTo = config.redirectUri) => {
         if (!config.readAccessToken) {
+          logger.warn('TMDB read token is missing while starting login flow');
           patchState(store, { error: 'Configura TMDB_READ_ACCESS_TOKEN en environments.' });
           return;
         }

@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
+import { LoggerService } from '../../../core/logging/logger.service';
 import { TmdbMovieDetailsApiService } from '../data-access/tmdb-movie-details-api.service';
 import { TmdbMovieDetailDto } from '../domain/dto/tmdb-movie-detail.dto';
 import { MovieDetailsStore } from './movie-details.store';
@@ -10,6 +11,7 @@ type MovieDetailsStoreInstance = InstanceType<typeof MovieDetailsStore>;
 describe('MovieDetailsStore', () => {
   let store: MovieDetailsStoreInstance;
   let api: { getMovieDetails: ReturnType<typeof vi.fn> };
+  let logger: { captureException: ReturnType<typeof vi.fn> };
 
   const buildMovieDetailDto = (id: number): TmdbMovieDetailDto => ({
     adult: false,
@@ -41,9 +43,14 @@ describe('MovieDetailsStore', () => {
 
   beforeEach(() => {
     api = { getMovieDetails: vi.fn() };
+    logger = { captureException: vi.fn() };
 
     TestBed.configureTestingModule({
-      providers: [MovieDetailsStore, { provide: TmdbMovieDetailsApiService, useValue: api }],
+      providers: [
+        MovieDetailsStore,
+        { provide: TmdbMovieDetailsApiService, useValue: api },
+        { provide: LoggerService, useValue: logger },
+      ],
     });
 
     store = TestBed.inject(MovieDetailsStore);

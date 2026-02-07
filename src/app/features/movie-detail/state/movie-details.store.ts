@@ -3,6 +3,7 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { EMPTY, catchError, map, switchMap, tap } from 'rxjs';
 
+import { LoggerService } from '../../../core/logging/logger.service';
 import { TmdbMovieDetailsApiService } from '../data-access/tmdb-movie-details-api.service';
 import { mapMovieDetailDtoToDetail } from '../domain/mappers/movie-detail.mapper';
 import { MovieDetail } from '../domain/models/movie-detail.model';
@@ -31,6 +32,7 @@ export const MovieDetailsStore = signalStore(
   withState(initialState),
   withMethods((store) => {
     const api = inject(TmdbMovieDetailsApiService);
+    const logger = inject(LoggerService);
 
     const loadMovie = rxMethod<MovieDetailsRequest>((request$) =>
       request$.pipe(
@@ -39,7 +41,10 @@ export const MovieDetailsStore = signalStore(
           api.getMovieDetails(request.id, request.language).pipe(
             map((dto) => mapMovieDetailDtoToDetail(dto)),
             tap((movie) => patchState(store, { movie, loading: false })),
-            catchError(() => {
+            catchError((error) => {
+              logger.captureException(error, 'Failed to load movie details', {
+                request,
+              });
               patchState(store, {
                 error: 'No se pudieron cargar los detalles de la pelicula.',
                 loading: false,

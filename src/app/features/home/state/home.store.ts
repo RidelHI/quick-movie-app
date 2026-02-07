@@ -3,6 +3,7 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { EMPTY, catchError, map, switchMap, tap } from 'rxjs';
 
+import { LoggerService } from '../../../core/logging/logger.service';
 import { TmdbMoviesApiService } from '../data-access/tmdb-movies-api.service';
 import { mapMovieListResponseDtoToPaginatedResult } from '../domain/mappers/pagination.mapper';
 import { MovieSummary } from '../domain/models/movie-summary.model';
@@ -32,6 +33,7 @@ export const HomeStore = signalStore(
   withState(initialState),
   withMethods((store) => {
     const api = inject(TmdbMoviesApiService);
+    const logger = inject(LoggerService);
 
     const loadNowPlaying = rxMethod<HomeRequest>((params$) =>
       params$.pipe(
@@ -41,7 +43,10 @@ export const HomeStore = signalStore(
             map((dto) => mapMovieListResponseDtoToPaginatedResult(dto)),
             map((result) => result.items.slice(0, params.limit)),
             tap((items) => patchState(store, { nowPlaying: items, loading: false })),
-            catchError(() => {
+            catchError((error) => {
+              logger.captureException(error, 'Failed to load now playing movies', {
+                request: params,
+              });
               patchState(store, {
                 loading: false,
                 error: 'No se pudieron cargar las peliculas.',

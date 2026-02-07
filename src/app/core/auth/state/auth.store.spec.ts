@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 
+import { LoggerService } from '../../logging/logger.service';
 import { TMDB_CONFIG, TmdbConfig } from '../../../shared/config/tmdb.config';
 import { TmdbAuthApiService } from '../tmdb-auth-api.service';
 import { AuthStore } from './auth.store';
@@ -13,6 +14,10 @@ describe('AuthStore', () => {
   let api: {
     createRequestToken: ReturnType<typeof vi.fn>;
     createAccessToken: ReturnType<typeof vi.fn>;
+  };
+  let logger: {
+    captureException: ReturnType<typeof vi.fn>;
+    warn: ReturnType<typeof vi.fn>;
   };
   let router: { navigateByUrl: ReturnType<typeof vi.fn> };
 
@@ -33,6 +38,7 @@ describe('AuthStore', () => {
         AuthStore,
         { provide: TmdbAuthApiService, useValue: api },
         { provide: Router, useValue: router },
+        { provide: LoggerService, useValue: logger },
         { provide: TMDB_CONFIG, useValue: config },
       ],
     });
@@ -45,6 +51,10 @@ describe('AuthStore', () => {
     api = {
       createRequestToken: vi.fn(),
       createAccessToken: vi.fn(),
+    };
+    logger = {
+      captureException: vi.fn(),
+      warn: vi.fn(),
     };
     router = { navigateByUrl: vi.fn() };
   });
