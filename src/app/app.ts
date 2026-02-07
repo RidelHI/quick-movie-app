@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { AppFooterComponent } from './core/layout/app-footer/app-footer.component';
@@ -9,7 +9,7 @@ import { AppHeaderComponent } from './core/layout/app-header/app-header.componen
   imports: [RouterOutlet, AppHeaderComponent, AppFooterComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  protected readonly title = signal('quick-movie-app');
 }

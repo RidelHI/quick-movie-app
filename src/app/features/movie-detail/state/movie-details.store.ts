@@ -1,5 +1,5 @@
-import { computed, inject } from '@angular/core';
-import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { inject } from '@angular/core';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { EMPTY, catchError, map, switchMap, tap } from 'rxjs';
 
@@ -29,11 +29,6 @@ const initialState: MovieDetailsState = {
 export const MovieDetailsStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed((store) => ({
-    movie: computed(() => store.movie()),
-    loading: computed(() => store.loading()),
-    error: computed(() => store.error()),
-  })),
   withMethods((store) => {
     const api = inject(TmdbMovieDetailsApiService);
 

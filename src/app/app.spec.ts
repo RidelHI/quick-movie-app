@@ -24,6 +24,6 @@ describe('App', () => {
       link.textContent?.trim(),
     );
     expect(links).toContain('Home');
-    expect(links).toContain('Auth');
+    expect(links).toContain('Sesion');
   });
 });

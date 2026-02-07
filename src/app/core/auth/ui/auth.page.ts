@@ -14,6 +14,7 @@ export class AuthPageComponent {
   private readonly auth = inject(AuthStore);
 
   readonly isAuthenticated = this.auth.isAuthenticated;
+  readonly error = this.auth.error;
 
   startLogin(): void {
     this.auth.startLogin();

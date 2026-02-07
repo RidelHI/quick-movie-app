@@ -21,9 +21,7 @@ export class HomePageComponent implements OnInit {
   readonly isAuthenticated = this.auth.isAuthenticated;
 
   ngOnInit(): void {
-    if (this.isAuthenticated()) {
-      this.store.loadNowPlayingTitles(10);
-    }
+    this.store.loadNowPlayingTitles(10);
   }
 
   login(): void {

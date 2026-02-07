@@ -1,59 +1,54 @@
-# QuickMovieApp
+# Quick Movie App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.2.
+Angular 21 demo app using TMDB APIs, feature-first architecture, and `@ngrx/signals`.
 
-## Development server
+## Stack
 
-To start a local development server, run:
+- Angular 21 (standalone components)
+- `@ngrx/signals` for feature stores
+- Tailwind CSS v4
+- Vitest + Angular TestBed
 
-```bash
-ng serve
-```
+## Architecture
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- `src/app/core`: global concerns (auth, http interceptor, layout)
+- `src/app/shared`: shared models/config
+- `src/app/features`: domain features (`home`, `movie-detail`)
+  - `data-access`: API services
+  - `domain`: DTOs, models, mappers
+  - `state`: signal stores
+  - `ui`: pages/components
 
-## Code scaffolding
+## Environment setup
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+TMDB config is loaded from environment files:
 
-```bash
-ng generate component component-name
-```
+- `src/environments/environment.ts`
+- `src/environments/environment.development.ts`
+- `src/environments/environment.production.ts`
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Use `src/environments/environment.local.example.ts` as reference and copy its values into
+`src/environments/environment.development.ts` for local work.
 
-```bash
-ng generate --help
-```
+Required:
 
-## Building
+- `tmdb.readAccessToken`
+- `tmdb.redirectUri`
 
-To build the project run:
+Without `readAccessToken`, TMDB login flow will not start.
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+## Scripts
 
 ```bash
-ng e2e
+bun run start
+bun run build
+bun run lint
+bun run test -- --watch=false
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Routes
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `/home`: now playing list
+- `/movies/:id`: movie detail
+- `/auth`: TMDB auth start/logout
+- `/auth/callback`: TMDB callback completion

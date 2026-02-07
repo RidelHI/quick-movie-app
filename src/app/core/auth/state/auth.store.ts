@@ -76,7 +76,13 @@ export const AuthStore = signalStore(
     );
 
     return {
-      startLogin: (redirectTo = config.redirectUri) => startLogin(redirectTo),
+      startLogin: (redirectTo = config.redirectUri) => {
+        if (!config.readAccessToken) {
+          patchState(store, { error: 'Configura TMDB_READ_ACCESS_TOKEN en environments.' });
+          return;
+        }
+        startLogin(redirectTo);
+      },
       completeLogin: () => completeLogin(void 0),
       logout: () => {
         sessionStorage.removeItem(ACCESS_TOKEN_KEY);

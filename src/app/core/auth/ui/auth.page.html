@@ -1,6 +1,9 @@
 <section class="auth-page">
   <h1>Autenticacion TMDB</h1>
   <p>Esta demo usa el flujo v4 de TMDB. Primero autorizas la app y luego vuelve aqui.</p>
+  @if (error()) {
+    <p>{{ error() }}</p>
+  }
 
   @if (isAuthenticated()) {
     <p>Sesion activa.</p>
