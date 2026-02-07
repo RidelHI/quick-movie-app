@@ -64,6 +64,10 @@ jobs:
               apiBaseUrlV4: 'https://api.themoviedb.org/4',
               readAccessToken: '${TMDB_READ_ACCESS_TOKEN}',
               redirectUri: '${TMDB_REDIRECT_URI}',
+              httpCache: {
+                enabled: true,
+                defaultTtlMs: 30000,
+              },
             },
           };
           EOF
