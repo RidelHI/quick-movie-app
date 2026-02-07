@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { withoutCacheInvalidation } from '../http/http-cache.tokens';
 import { TMDB_CONFIG, TmdbConfig } from '../../shared/config/tmdb.config';
 
 export interface TmdbRequestTokenResponse {
@@ -28,6 +29,7 @@ export class TmdbAuthApiService {
     return this.http.post<TmdbRequestTokenResponse>(
       `${this.config.apiBaseUrlV4}/auth/request_token`,
       { redirect_to: redirectTo },
+      { context: withoutCacheInvalidation() },
     );
   }
 
@@ -35,6 +37,7 @@ export class TmdbAuthApiService {
     return this.http.post<TmdbAccessTokenResponse>(
       `${this.config.apiBaseUrlV4}/auth/access_token`,
       { request_token: requestToken },
+      { context: withoutCacheInvalidation() },
     );
   }
 }

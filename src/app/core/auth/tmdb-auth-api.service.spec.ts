@@ -14,6 +14,10 @@ describe('TmdbAuthApiService', () => {
     apiBaseUrlV4: 'https://api.example.com/4',
     readAccessToken: 'read-token',
     redirectUri: 'http://localhost:4200/auth/callback',
+    httpCache: {
+      enabled: true,
+      defaultTtlMs: 30_000,
+    },
   };
 
   beforeEach(() => {

@@ -6,6 +6,10 @@ export interface TmdbConfig {
   apiBaseUrlV4: string;
   readAccessToken: string;
   redirectUri: string;
+  httpCache: {
+    enabled: boolean;
+    defaultTtlMs: number;
+  };
 }
 
 export const TMDB_CONFIG = new InjectionToken<TmdbConfig>('TMDB_CONFIG');
@@ -15,4 +19,8 @@ export const DEFAULT_TMDB_CONFIG: TmdbConfig = {
   apiBaseUrlV4: environment.tmdb.apiBaseUrlV4,
   readAccessToken: environment.tmdb.readAccessToken,
   redirectUri: environment.tmdb.redirectUri,
+  httpCache: {
+    enabled: environment.tmdb.httpCache.enabled,
+    defaultTtlMs: environment.tmdb.httpCache.defaultTtlMs,
+  },
 };

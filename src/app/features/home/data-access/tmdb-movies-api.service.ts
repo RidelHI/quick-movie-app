@@ -2,9 +2,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { withHttpCache } from '../../../core/http/http-cache.tokens';
 import { TMDB_CONFIG, TmdbConfig } from '../../../shared/config/tmdb.config';
 import { TmdbPaginatedResponse } from '../domain/dto/tmdb-paginated-response.dto';
 import { TmdbMovieListItemDto } from '../domain/dto/tmdb-movie-list-item.dto';
+
+const NOW_PLAYING_TTL_MS = 60_000;
 
 @Injectable({ providedIn: 'root' })
 export class TmdbMoviesApiService {
@@ -27,7 +30,10 @@ export class TmdbMoviesApiService {
 
     return this.http.get<TmdbPaginatedResponse<TmdbMovieListItemDto>>(
       `${this.config.apiBaseUrlV3}/movie/now_playing`,
-      { params },
+      {
+        params,
+        context: withHttpCache({ ttlMs: NOW_PLAYING_TTL_MS }),
+      },
     );
   }
 }

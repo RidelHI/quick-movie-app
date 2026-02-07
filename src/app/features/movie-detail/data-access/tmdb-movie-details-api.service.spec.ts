@@ -14,6 +14,10 @@ describe('TmdbMovieDetailsApiService', () => {
     apiBaseUrlV4: 'https://api.example.com/4',
     readAccessToken: 'read-token',
     redirectUri: 'http://localhost:4200/auth/callback',
+    httpCache: {
+      enabled: true,
+      defaultTtlMs: 30_000,
+    },
   };
 
   beforeEach(() => {
@@ -37,7 +41,10 @@ describe('TmdbMovieDetailsApiService', () => {
     service.getMovieDetails(10).subscribe();
 
     const req = httpTesting.expectOne((request) => {
-      return request.url === `${config.apiBaseUrlV3}/movie/10` && request.params.get('language') === 'es-ES';
+      return (
+        request.url === `${config.apiBaseUrlV3}/movie/10` &&
+        request.params.get('language') === 'es-ES'
+      );
     });
     expect(req.request.method).toBe('GET');
     req.flush({ id: 10 });
@@ -47,7 +54,10 @@ describe('TmdbMovieDetailsApiService', () => {
     service.getMovieDetails(20, 'en-US').subscribe();
 
     const req = httpTesting.expectOne((request) => {
-      return request.url === `${config.apiBaseUrlV3}/movie/20` && request.params.get('language') === 'en-US';
+      return (
+        request.url === `${config.apiBaseUrlV3}/movie/20` &&
+        request.params.get('language') === 'en-US'
+      );
     });
     expect(req.request.method).toBe('GET');
     req.flush({ id: 20 });

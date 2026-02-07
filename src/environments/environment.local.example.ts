@@ -5,5 +5,9 @@ export const environment = {
     apiBaseUrlV4: 'https://api.themoviedb.org/4',
     readAccessToken: 'YOUR_TMDB_READ_ACCESS_TOKEN',
     redirectUri: 'http://localhost:4200/auth/callback',
+    httpCache: {
+      enabled: true,
+      defaultTtlMs: 30000,
+    },
   },
 };
