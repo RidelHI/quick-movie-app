@@ -6,5 +6,7 @@
     "typescript": "html"
   },
   "tailwindCSS.emmetCompletions": true,
-  "tailwindCSS.experimental.configFile": "src/styles.css"
+  "tailwindCSS.experimental.configFile": "src/styles.css",
+  "chatgpt.followUpQueueMode": "steer",
+  "chatgpt.composerEnterBehavior": "cmdIfMultiline"
 }
