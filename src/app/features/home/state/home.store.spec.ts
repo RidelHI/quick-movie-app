@@ -31,11 +31,16 @@ describe('HomeStore', () => {
     vote_count: 100,
   });
 
-  const buildResponse = (count: number): TmdbPaginatedResponse<TmdbMovieListItemDto> => ({
-    page: 1,
-    total_pages: 1,
+  const buildResponse = (
+    count: number,
+    page = 1,
+    totalPages = 1,
+    startId = 1,
+  ): TmdbPaginatedResponse<TmdbMovieListItemDto> => ({
+    page,
+    total_pages: totalPages,
     total_results: count,
-    results: Array.from({ length: count }, (_, index) => buildMovie(index + 1)),
+    results: Array.from({ length: count }, (_, index) => buildMovie(startId + index)),
   });
 
   beforeEach(() => {
@@ -56,13 +61,15 @@ describe('HomeStore', () => {
   it('loads now playing movies', () => {
     api.getNowPlaying.mockReturnValue(of(buildResponse(3)));
 
-    store.loadNowPlayingTitles(2);
+    store.loadNowPlaying();
 
     expect(api.getNowPlaying).toHaveBeenCalledWith(1, { language: 'es-ES' });
-    expect(store.request()).toEqual({ page: 1, limit: 2, language: 'es-ES' });
+    expect(store.request()).toEqual({ language: 'es-ES' });
     expect(store.loading()).toBe(false);
     expect(store.error()).toBeNull();
-    expect(store.nowPlaying().length).toBe(2);
+    expect(store.nowPlaying().length).toBe(3);
+    expect(store.page()).toBe(1);
+    expect(store.totalPages()).toBe(1);
   });
 
   it('does not reload when no request is set', () => {
@@ -74,10 +81,24 @@ describe('HomeStore', () => {
   it('sets error on load failure', () => {
     api.getNowPlaying.mockReturnValue(throwError(() => new Error('boom')));
 
-    store.loadNowPlayingTitles(10);
+    store.loadNowPlaying();
 
     expect(store.loading()).toBe(false);
     expect(store.error()).toBe('No se pudieron cargar las peliculas.');
     expect(store.nowPlaying()).toEqual([]);
+  });
+
+  it('loads next page when available', () => {
+    api.getNowPlaying.mockReturnValueOnce(of(buildResponse(2, 1, 2, 1)));
+    api.getNowPlaying.mockReturnValueOnce(of(buildResponse(2, 2, 2, 3)));
+
+    store.loadNowPlaying();
+    store.loadNextPage();
+
+    expect(api.getNowPlaying).toHaveBeenNthCalledWith(1, 1, { language: 'es-ES' });
+    expect(api.getNowPlaying).toHaveBeenNthCalledWith(2, 2, { language: 'es-ES' });
+    expect(store.page()).toBe(2);
+    expect(store.totalPages()).toBe(2);
+    expect(store.nowPlaying().length).toBe(4);
   });
 });
