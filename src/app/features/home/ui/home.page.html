@@ -12,7 +12,7 @@
             Peliculas recientes
           </h1>
           <p class="max-w-2xl text-sm text-slate-400 sm:text-base">
-            Demo: primeros 10 titulos de Now Playing. Explora con el teclado usando las flechas.
+            Ordenadas por fecha de estreno para encontrar lo mas nuevo.
           </p>
         </div>
         <a
@@ -23,6 +23,52 @@
         </a>
       </div>
     </header>
+
+    <section class="rounded-3xl border border-slate-800 bg-slate-900/40 p-6">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div class="space-y-2">
+          <h2 class="text-lg font-semibold text-slate-100">Filtra tu exploracion</h2>
+          <p class="text-sm text-slate-400">
+            Busca por nombre o combina con el filtro de idioma para acotar resultados.
+          </p>
+        </div>
+        <button
+          type="button"
+          (click)="clearFilters()"
+          class="inline-flex items-center justify-center rounded-full border border-slate-700 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-300 transition hover:border-slate-500"
+        >
+          Limpiar filtros
+        </button>
+      </div>
+      <div class="mt-6 grid gap-4 sm:grid-cols-[1.5fr_1fr]">
+        <label class="space-y-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+          Buscar titulo
+          <input
+            type="search"
+            [value]="searchQuery()"
+            (input)="updateSearchQuery($any($event.target).value)"
+            placeholder="Ej: Dune, Oppenheimer"
+            class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm font-normal text-slate-100 outline-none transition focus:border-slate-500"
+          />
+        </label>
+        <label class="space-y-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+          Idioma
+          <select
+            [value]="languageFilter()"
+            (change)="updateLanguageFilter($any($event.target).value)"
+            class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm font-normal text-slate-100 outline-none transition focus:border-slate-500"
+          >
+            <option value="all">Todos los idiomas</option>
+            @for (language of languageOptions(); track language) {
+              <option [value]="language">{{ language | uppercase }}</option>
+            }
+          </select>
+        </label>
+      </div>
+      <div class="mt-4 text-xs text-slate-500">
+        Mostrando {{ filteredMovies().length }} de {{ nowPlaying().length }} peliculas.
+      </div>
+    </section>
 
     @if (!isAuthenticated()) {
       <div
@@ -58,8 +104,13 @@
         </button>
       </div>
     } @else {
-      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-label="Peliculas recientes">
-        @for (movie of nowPlaying(); track movie.id) {
+      @if (filteredMovies().length === 0) {
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-slate-200">
+          <p class="text-sm">No hay coincidencias con los filtros actuales.</p>
+        </div>
+      } @else {
+        <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-label="Peliculas recientes">
+          @for (movie of filteredMovies(); track movie.id) {
           <li>
             <a
               [routerLink]="['/movies', movie.id]"
@@ -103,8 +154,18 @@
               </div>
             </a>
           </li>
+          }
+        </ul>
+      }
+      <div class="mt-8 flex flex-col items-center gap-2 text-sm text-slate-400">
+        @if (loadingMore()) {
+          <p aria-live="polite">Cargando mas peliculas...</p>
+        } @else if (!hasMore()) {
+          <p>Has llegado al final de la lista.</p>
+        } @else {
+          <p>Desplaza hacia abajo para cargar mas peliculas.</p>
         }
-      </ul>
+      </div>
     }
   </div>
 </section>
