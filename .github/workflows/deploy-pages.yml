@@ -107,7 +107,7 @@ jobs:
         run: cp dist/quick-movie-app/browser/index.html dist/quick-movie-app/browser/404.html
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: dist/quick-movie-app/browser
 
